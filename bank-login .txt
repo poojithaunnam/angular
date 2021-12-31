@@ -1,0 +1,76 @@
+login .component.html
+
+<h2>
+<form #login1="ngForm" (submit)="loginuser()" >
+<label for="email101">Email</label><br>
+<input type="email" name="email" id="email101" class="form-control" [(ngModel)]="user1.emailid" required><br>
+<label for="pass">Password</label><br>
+<input type="password" name="password" id="pass" class="form-control" [(ngModel)]="user1.password" required><br>
+<input type="submit" value="Login" [disabled]="!login1.form.valid">
+
+</form>
+</h2>
+
+login.component.ts
+
+user1=new User;
+
+
+
+ngOnInit(): void {
+}
+loginuser(){
+
+
+
+this.service.login(this.user1).subscribe(
+data=> console.log("Succesfully updated"),
+
+error=>console.log("Error arrived")
+
+)
+
+
+
+
+}
+
+
+user_service.ts
+login(us:User):Observable<User>
+{
+return this.http.post<User>(`${this._URL}/login`,us);
+}
+
+user controller
+
+@PostMapping("/login")
+public User loginuser(@RequestBody User user) throws Exception
+{
+String tempemail=user.getEmailid();
+String temppass=user.getPassword();
+User obj=null;
+if(tempemail !=null && temppass!=null) {
+obj=service.fetchuserbyemailandpass(tempemail, temppass);
+
+}
+if(obj ==null)
+{
+throw new Exception("User doesnot exits");
+}
+return obj;
+
+}
+user repo
+
+public User findByEmailidAndPassword(String emailid,String password);
+
+user service 
+
+public User fetchuserbyemailandpass(String email,String password)
+{
+return repo.findByEmailidAndPassword(email, password);
+
+
+}
+
